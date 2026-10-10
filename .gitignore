@@ -1,0 +1,34 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment and IDE
+.env
+.venv
+env/
+venv/
+.vscode/
+.idea/
+
+# Local databases and runtime keys/certs
+vault-backend/app/storage/*.db
+vault-backend/app/storage/*.qbundle
+vault-backend/app/storage/tmp_*
+vault-backend/app/keys/*.key
+vault-backend/app/keys/*.pub
+
+pqc-ca/certs/*.key
+pqc-ca/certs/*.csr
+pqc-ca/certs/*.ext
+pqc-ca/certs_registry.json
+
+# Test files
+secret_contract.txt
+recovered_contract.txt
+test_secret.txt
+*.log
+
+# Operating System files
+.DS_Store
+Thumbs.db

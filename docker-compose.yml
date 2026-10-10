@@ -1,0 +1,60 @@
+services:
+  # 1. PQC Certificate Authority Microservice
+  pqc-ca:
+    build:
+      context: ./pqc-ca
+      dockerfile: Dockerfile
+    container_name: qshield-ca
+    ports:
+      - "8001:8001"
+    volumes:
+      - pqc_ssl_certs:/etc/ssl/pqc
+    networks:
+      - pqc_net
+    restart: unless-stopped
+
+  # 2. PQC Secure Document Vault Backend
+  vault-backend:
+    build:
+      context: ./vault-backend
+      dockerfile: Dockerfile
+    container_name: qshield-vault
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./vault-backend/app:/app
+      - vault_storage:/app/storage
+      - vault_keys:/app/keys
+    networks:
+      - pqc_net
+    restart: unless-stopped
+
+  # 3. PQC Reverse Proxy Gateway & Web Console
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    image: q-shield-gateway:latest
+    container_name: qshield-gateway
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    volumes:
+      - pqc_ssl_certs:/etc/ssl/pqc
+      - ./gateway/nginx.conf:/opt/nginx-pqc/conf/nginx.conf:ro
+      - ./dashboard:/usr/share/nginx/html:ro
+    depends_on:
+      - pqc-ca
+      - vault-backend
+    networks:
+      - pqc_net
+    restart: unless-stopped
+
+volumes:
+  pqc_ssl_certs:
+  vault_storage:
+  vault_keys:
+
+networks:
+  pqc_net:
+    driver: bridge

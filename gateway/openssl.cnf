@@ -1,0 +1,23 @@
+openssl_conf = openssl_init
+
+[openssl_init]
+providers = provider_sect
+ssl_conf = ssl_sect
+
+[provider_sect]
+default = default_sect
+oqsprovider = oqsprovider_sect
+
+[default_sect]
+activate = 1
+
+[oqsprovider_sect]
+activate = 1
+
+[ssl_sect]
+system_default = system_default_ssl_conf
+
+[system_default_ssl_conf]
+MinProtocol = TLSv1.3
+# Thứ tự ưu tiên KEM: Hybrid X25519MLKEM768 -> Thuần MLKEM768 -> P384_MLKEM768 -> X25519 cổ điển
+Groups = X25519MLKEM768:MLKEM768:p384_mlkem768:X25519
