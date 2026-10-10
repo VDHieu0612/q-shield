@@ -19,18 +19,18 @@ flowchart TB
     end
 
     subgraph EdgeLayer["Edge / Ingress Layer"]
-        GW["Q-Shield Reverse Proxy Gateway\n(Nginx + OpenSSL 3.5.0 + OQS-Provider)\nPorts: 8080 (Web UI) / 8443 (PQC TLS 1.3)"]
+        GW["Q-Shield Reverse Proxy Gateway<br/>Nginx + OpenSSL 3.5.0 + OQS-Provider<br/>Ports: 8080 (Web UI) / 8443 (PQC TLS 1.3)"]
     end
 
     subgraph InternalServices["Isolated Internal Services"]
-        CA["PQC-CA Microservice (FastAPI)\n- ML-DSA-65 Root CA\n- Automated X.509 Certificate Issuance\n- REST API (:8001)"]
-        VAULT["Secure Document Vault API (FastAPI)\n- Hybrid AES-256-GCM + ML-KEM-768 Encapsulation\n- ML-DSA-65 Digital Signature Verification\n- REST API (:8000)"]
+        CA["PQC-CA Microservice (FastAPI)<br/>ML-DSA-65 Root CA<br/>Automated X.509 Certificate Issuance"]
+        VAULT["Secure Document Vault API (FastAPI)<br/>Hybrid AES-256-GCM + ML-KEM-768 Encapsulation<br/>ML-DSA-65 Digital Signature Verification"]
         DB[("SQLite Metadata Database")]
         VAULT --- DB
     end
 
-    Browser -->|Port 8080| GW
-    PQCClient -->|Port 8443 (TLS 1.3 ML-KEM)| GW
+    Browser -->|Port 8080 HTTP| GW
+    PQCClient -->|"Port 8443 TLS 1.3 (ML-KEM)"| GW
     GW -->|Internal Reverse Proxy| CA
     GW -->|Internal Reverse Proxy| VAULT
     CA -.->|Automated Certificate Mount| GW
